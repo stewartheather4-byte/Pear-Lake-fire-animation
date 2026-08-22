@@ -327,7 +327,7 @@ def make_frame(df: pd.DataFrame, frame_date: date, output_path: Path) -> None:
     west, south, east, north = BBOX
     day_df = frame_data_for_date(df, frame_date)
 
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots(figsize=(12, 13))
 
     ax.set_xlim(west, east)
     ax.set_ylim(south, north)
