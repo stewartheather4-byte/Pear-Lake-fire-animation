@@ -44,7 +44,7 @@ START_DATE = date(2026, 7, 17)
 
 # Wider westward view so the full Pear Lake fire growth is visible.
 # FIRMS order: west, south, east, north.
-BBOX = (-122.80, 50.70, -120.90, 51.75)
+BBOX = (-123.60, 50.70, -120.90, 51.75)
 
 # Same multi-satellite approach as the Brunswick GitHub version.
 SOURCES = [
