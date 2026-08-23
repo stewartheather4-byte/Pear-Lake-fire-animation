@@ -54,11 +54,9 @@ jobs:
         run: |
           echo "Files GitHub can see:"
           find . -maxdepth 3 -type f -print
-
-          SCRIPT=$(find . -maxdepth 3 -type f -name "fire_animation.py" | head -n 1)
-
+          SCRIPT=$(find . -maxdepth 3 -type f -name "pear_lake_fire_animation.py" | head -n 1)
           if [ -z "$SCRIPT" ]; then
-            echo "ERROR: fire_animation.py was not found."
+            echo "ERROR: pear_lake__animation.py was not found."
             exit 1
           fi
 
