@@ -48,8 +48,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Pear Lake wildfire animation
-        run: python fire_animation.py
+ - name: Run Pear Lake wildfire animation
+  run: |
+    echo "Files GitHub can see:"
+    find . -maxdepth 3 -type f -print
+
+    SCRIPT=$(find . -maxdepth 3 -type f -name "fire_animation.py" | head -n 1)
+
+    if [ -z "$SCRIPT" ]; then
+      echo "ERROR: fire_animation.py was not found."
+      exit 1
+    fi
+
+    echo "Running: $SCRIPT"
+    python "$SCRIPT"
 
       - name: Save FIRMS cache and stop status
         run: |
