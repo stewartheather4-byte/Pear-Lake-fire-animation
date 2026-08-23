@@ -48,34 +48,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+   
+
       - name: Run Pear Lake wildfire animation
-  run: |
-    echo "Files GitHub can see:"
-    find . -maxdepth 3 -type f -print
-
-    SCRIPT=$(find . -maxdepth 3 -type f -name "fire_animation.py" | head -n 1)
-
-    if [ -z "$SCRIPT" ]; then
-      echo "ERROR: fire_animation.py was not found."
-      exit 1
-    fi
-
-    echo "Running: $SCRIPT"
-    python "$SCRIPT"
-
-      - name: Save FIRMS cache and stop status
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "Files GitHub can see:"
+          find . -maxdepth 3 -type f -print
 
-          git add data/ stop_updates.flag 2>/dev/null || true
+          SCRIPT=$(find . -maxdepth 3 -type f -name "fire_animation.py" | head -n 1)
 
-          if git diff --cached --quiet; then
-            echo "No cache/status changes to commit."
-          else
-            git commit -m "Update Pear Lake wildfire data $(date -u +%F)"
-            git push
+          if [ -z "$SCRIPT" ]; then
+            echo "ERROR: fire_animation.py was not found."
+            exit 1
           fi
+
+          echo "Running: $SCRIPT"
+          python "$SCRIPT"
+          
+          
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
