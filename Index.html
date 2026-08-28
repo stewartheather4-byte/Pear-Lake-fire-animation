@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wildfire Animation</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      color: darkblue;
+      font-size: 32px;
+      margin: 14px 0 6px 0;
+    }
+
+    #dateLabel {
+      color: darkblue;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #fireImage {
+      width: 100%;
+      max-width: 1200px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #f2f2f2;
+    }
+
+    button:active {
+      background: #d9d9d9;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Wildfire Animation</h1>
+  <div id="dateLabel">Loading...</div>
+
+  <img id="fireImage" alt="Wildfire animation frame" />
+
+  <div class="controls">
+    <button id="playBtn">Play</button>
+    <button id="pauseBtn">Pause</button>
+    <button id="restartBtn">Restart</button>
+    <button id="fullscreenBtn">Full Screen</button>
+  </div>
+
+  <script>
+    let currentFrame = 1;
+    let maxFrames = 200;
+    let timer = null;
+    let isPlaying = false;
+    let discoveredLastFrame = null;
+
+    const image = document.getElementById("fireImage");
+    const dateLabel = document.getElementById("dateLabel");
+
+    function framePath(frameNumber) {
+      const padded = String(frameNumber).padStart(3, "0");
+      return "frames/frame_" + padded + ".png";
+    }
+
+    function showFrame(frameNumber) {
+      currentFrame = frameNumber;
+
+      const testImage = new Image();
+      const src = framePath(currentFrame) + "?v=" + Date.now();
+
+      testImage.onload = function () {
+        image.src = src;
+        dateLabel.textContent = "Frame " + currentFrame;
+      };
+
+      testImage.onerror = function () {
+        if (currentFrame > 1) {
+          discoveredLastFrame = currentFrame - 1;
+          pauseAnimation();
+          currentFrame = discoveredLastFrame;
+          image.src = framePath(currentFrame) + "?v=" + Date.now();
+          dateLabel.textContent = "Final Frame " + currentFrame;
+        } else {
+          dateLabel.textContent = "No frames found. Check the frames folder.";
+        }
+      };
+
+      testImage.src = src;
+    }
+
+    function playAnimation() {
+      if (isPlaying) return;
+
+      isPlaying = true;
+
+      timer = setInterval(function () {
+        const lastFrame = discoveredLastFrame || maxFrames;
+
+        if (currentFrame < lastFrame) {
+          showFrame(currentFrame + 1);
+        } else {
+          pauseAnimation();
+        }
+      }, 900);
+    }
+
+    function pauseAnimation() {
+      isPlaying = false;
+
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    function restartAnimation() {
+      pauseAnimation();
+      currentFrame = 1;
+      showFrame(currentFrame);
+
+      setTimeout(function () {
+        playAnimation();
+      }, 300);
+    }
+
+    function fullscreenAnimation() {
+      const page = document.documentElement;
+
+      if (page.requestFullscreen) {
+        page.requestFullscreen();
+      } else if (page.webkitRequestFullscreen) {
+        page.webkitRequestFullscreen();
+      }
+    }
+
+    document.getElementById("playBtn").onclick = playAnimation;
+    document.getElementById("pauseBtn").onclick = pauseAnimation;
+    document.getElementById("restartBtn").onclick = restartAnimation;
+    document.getElementById("fullscreenBtn").onclick = fullscreenAnimation;
+
+    showFrame(1);
+  </script>
+</body>
+</html>
